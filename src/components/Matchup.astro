@@ -1,0 +1,61 @@
+---
+import Jersey from './Jersey.astro';
+import type { Edition } from '../lib/editions';
+
+interface Props {
+  edition: Edition;
+  size?: 'md' | 'lg';
+}
+
+const { edition, size = 'md' } = Astro.props;
+const [teamA, teamB] = edition.teams;
+const announced = Boolean(teamA && teamB);
+const width = size === 'lg' ? 'max-w-[11rem]' : 'max-w-[9rem]';
+---
+
+<div class="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+  {
+    announced
+      ? [teamA, teamB].map((team, i) => (
+          <div class={`row-start-1 flex flex-col items-center gap-2 text-center ${i === 1 ? 'col-start-3' : 'col-start-1'}`}>
+            <div class={`w-full ${width}`}>
+              <Jersey team={team} />
+            </div>
+            <p class="font-display text-lg uppercase leading-tight sm:text-2xl">{team.name}</p>
+            {edition.winner === team.id && (
+              <span class="foil whitespace-nowrap rounded-full border-2 border-ink px-3 py-0.5 text-sm font-bold uppercase tracking-wider">
+                🏆 Champions
+              </span>
+            )}
+          </div>
+        ))
+      : [0, 1].map((i) => (
+          <div class={`row-start-1 mx-auto w-full ${width} ${i === 1 ? 'col-start-3' : 'col-start-1'}`}>
+            <button type="button" class="packet" data-packet aria-label="Mystery team">
+              <span class="text-xs font-bold uppercase tracking-[0.25em]">Patonz Cup</span>
+              <span class="title-pop my-1 text-6xl sm:text-7xl">?</span>
+              <span class="rounded bg-ink px-2 py-0.5 text-sm font-bold uppercase text-white" data-packet-label>
+                Top secret
+              </span>
+            </button>
+          </div>
+        ))
+  }
+  <div class="col-start-2 row-start-1 grid h-12 w-12 place-items-center rounded-full border-[3px] border-ink bg-cup-red font-display text-lg text-white sm:h-14 sm:w-14 sm:text-xl">
+    VS
+  </div>
+</div>
+
+<script>
+  const lines = ['No peeking! 🙈', 'Top secret 🤫', 'Nothing yet…', 'Patience!', 'Try again later', 'Who could it be?'];
+
+  document.querySelectorAll<HTMLElement>('[data-packet]').forEach((packet) => {
+    packet.addEventListener('click', () => {
+      packet.classList.remove('is-shaking');
+      void packet.offsetWidth;
+      packet.classList.add('is-shaking');
+      const label = packet.querySelector('[data-packet-label]');
+      if (label) label.textContent = lines[Math.floor(Math.random() * lines.length)];
+    });
+  });
+</script>

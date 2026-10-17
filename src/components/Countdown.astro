@@ -1,0 +1,60 @@
+---
+interface Props {
+  target: string;
+}
+
+const { target } = Astro.props;
+const units = [
+  { key: 'd', label: 'days' },
+  { key: 'h', label: 'hours' },
+  { key: 'm', label: 'min' },
+  { key: 's', label: 'sec' },
+];
+---
+
+<div data-countdown={target}>
+  <p class="label text-center">Kick-off in</p>
+  <div class="mt-2 grid grid-cols-4 gap-2 sm:gap-3" data-cd-clock>
+    {
+      units.map((u) => (
+        <div class="text-center">
+          <div class="digit" data-cd={u.key}>--</div>
+          <span class="mt-1 block text-sm font-bold uppercase tracking-wider text-ink/70">{u.label}</span>
+        </div>
+      ))
+    }
+  </div>
+  <p class="hidden text-center font-display text-3xl text-cup-red" data-cd-done></p>
+</div>
+
+<script>
+  const DAY = 86_400_000;
+
+  document.querySelectorAll<HTMLElement>('[data-countdown]').forEach((el) => {
+    const target = new Date(el.dataset.countdown!).getTime();
+    const clock = el.querySelector('[data-cd-clock]')!;
+    const done = el.querySelector('[data-cd-done]')!;
+    const field = (key: string) => el.querySelector(`[data-cd="${key}"]`)!;
+    const pad = (n: number) => String(n).padStart(2, '0');
+
+    const tick = () => {
+      const diff = target - Date.now();
+      if (diff <= 0) {
+        clock.classList.add('hidden');
+        done.classList.remove('hidden');
+        done.textContent = diff > -DAY ? "It's match day! ⚽" : 'Match played: result coming soon…';
+        return false;
+      }
+      const secs = Math.floor(diff / 1000);
+      field('d').textContent = String(Math.floor(secs / 86_400));
+      field('h').textContent = pad(Math.floor((secs % 86_400) / 3600));
+      field('m').textContent = pad(Math.floor((secs % 3600) / 60));
+      field('s').textContent = pad(secs % 60);
+      return true;
+    };
+
+    if (tick()) {
+      const id = setInterval(() => tick() || clearInterval(id), 1000);
+    }
+  });
+</script>

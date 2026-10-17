@@ -1,0 +1,61 @@
+{
+  "editions": [
+    {
+      "edition": 3,
+      "year": 2026,
+      "date": "2026-11-07",
+      "kickoff": null,
+      "location": null,
+      "winner": null,
+      "teams": []
+    },
+    {
+      "edition": 2,
+      "year": 2025,
+      "date": null,
+      "kickoff": null,
+      "location": null,
+      "winner": "wow",
+      "teams": [
+        {
+          "id": "wow",
+          "name": "WoW",
+          "colors": ["#1d4e89", "#f7c600"],
+          "photos": [],
+          "players": []
+        },
+        {
+          "id": "dota",
+          "name": "Dota",
+          "colors": ["#b3261e", "#1a1a1a"],
+          "photos": [],
+          "players": []
+        }
+      ]
+    },
+    {
+      "edition": 1,
+      "year": 2024,
+      "date": null,
+      "kickoff": null,
+      "location": null,
+      "winner": "colbuccaro",
+      "teams": [
+        {
+          "id": "colbuccaro",
+          "name": "Colbuccaro",
+          "colors": ["#1f7a3a", "#ffffff"],
+          "photos": [],
+          "players": []
+        },
+        {
+          "id": "san-donato",
+          "name": "San Donato",
+          "colors": ["#d62828", "#1d4e89"],
+          "photos": [],
+          "players": []
+        }
+      ]
+    }
+  ]
+}

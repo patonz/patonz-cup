@@ -1,0 +1,56 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image, getImage } from 'astro:assets';
+import { photo, type Team } from '../lib/editions';
+
+interface Props {
+  team: Team;
+  class?: string;
+}
+
+const { team, class: className = '' } = Astro.props;
+const [main, accent] = team.colors;
+const images = (team.photos ?? []).map(photo).filter((img): img is ImageMetadata => Boolean(img));
+const fullSize = await Promise.all(images.map((src) => getImage({ src, width: 1400 })));
+const initial = team.name.trim()[0]?.toUpperCase() ?? '?';
+---
+
+{
+  images.length > 0 ? (
+    <button
+      type="button"
+      class={`relative block aspect-square w-full overflow-hidden rounded-xl border-[3px] border-ink bg-white ${className}`}
+      data-gallery={JSON.stringify(fullSize.map((img) => img.src))}
+      aria-label={`View the ${team.name} jersey`}
+    >
+      <Image src={images[0]} alt={`${team.name} jersey`} width={480} class="h-full w-full object-cover" />
+      {images.length > 1 && (
+        <span class="absolute bottom-1.5 right-1.5 rounded-full border-2 border-ink bg-cup-yellow px-2 text-sm font-bold">
+          +{images.length - 1}
+        </span>
+      )}
+    </button>
+  ) : (
+    <svg viewBox="0 0 100 100" class={`w-full ${className}`} role="img" aria-label={`${team.name} jersey`}>
+      <g stroke="#1a1a1a" stroke-width="3" stroke-linejoin="round">
+        <path d="M30 8 40 4q10 9 20 0l10 4 22 14-10 18-10-6v60H28V34l-10 6L8 22z" fill={main} />
+        <path d="M30 8 8 22l10 18 10-6zM70 8l22 14-10 18-10-6z" fill={accent} />
+        <path d="M40 4q10 9 20 0" fill="none" stroke={accent} stroke-width="5" />
+        <path d="M30 8 40 4q10 9 20 0l10 4 22 14-10 18-10-6v60H28V34l-10 6L8 22z" fill="none" />
+      </g>
+      <text
+        x="50"
+        y="72"
+        text-anchor="middle"
+        font-family="'Alfa Slab One', Georgia, serif"
+        font-size="30"
+        fill={accent}
+        stroke="#1a1a1a"
+        stroke-width="1.5"
+        paint-order="stroke"
+      >
+        {initial}
+      </text>
+    </svg>
+  )
+}

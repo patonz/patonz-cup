@@ -1,0 +1,53 @@
+---
+import AlbumPage from './AlbumPage.astro';
+import { completed } from '../lib/editions';
+---
+
+{
+  completed.length > 0 && (
+    <section id="album" class="mt-16">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <h2 class="section-title">The Album</h2>
+        <nav class="flex gap-2" aria-label="Editions">
+          {completed.map((e, i) => (
+            <button type="button" class="tab" data-album-tab={i} aria-current={String(i === 0)}>
+              {e.year}
+            </button>
+          ))}
+        </nav>
+      </div>
+      <p class="mt-2 text-ink/60">Swipe to flip through the editions →</p>
+      <div class="album-track mt-3" data-album-track>
+        {completed.map((edition) => <AlbumPage edition={edition} />)}
+      </div>
+    </section>
+  )
+}
+
+<script>
+  const track = document.querySelector<HTMLElement>('[data-album-track]');
+  const tabs = [...document.querySelectorAll<HTMLElement>('[data-album-tab]')];
+
+  if (track) {
+    const pages = [...track.children] as HTMLElement[];
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => {
+        const page = pages[i];
+        track.scrollTo({ left: page.offsetLeft - (track.clientWidth - page.clientWidth) / 2, behavior: 'smooth' });
+      });
+    });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const active = pages.indexOf(entry.target as HTMLElement);
+          tabs.forEach((tab, i) => tab.setAttribute('aria-current', String(i === active)));
+        }
+      },
+      { root: track, threshold: 0.6 },
+    );
+    pages.forEach((page) => observer.observe(page));
+  }
+</script>

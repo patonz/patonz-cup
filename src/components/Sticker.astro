@@ -1,0 +1,36 @@
+---
+interface Props {
+  name: string | null;
+  number: number;
+  color: string;
+  champion?: boolean;
+}
+
+const { name, number, color, champion = false } = Astro.props;
+const tilt = `${((number % 3) - 1) * 1.5}deg`;
+---
+
+{
+  name ? (
+    <div class="sticker" style={`--team: ${color}; --tilt: ${tilt}`}>
+      <span class="sticker-num">{number}</span>
+      {champion && (
+        <span class="foil absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full border-2 border-ink text-xs" title="Champion">
+          ★
+        </span>
+      )}
+      <div class="sticker-photo">
+        <svg viewBox="0 0 60 60" class="w-4/5" aria-hidden="true">
+          <circle cx="30" cy="24" r="11" fill="rgb(255 255 255 / 0.55)" />
+          <path d="M8 60c0-14 10-22 22-22s22 8 22 22z" fill="rgb(255 255 255 / 0.55)" />
+        </svg>
+      </div>
+      <p class="sticker-name">{name}</p>
+    </div>
+  ) : (
+    <div class="sticker sticker--empty" style={`--tilt: ${tilt}`} aria-label={`Sticker ${number} missing`}>
+      <span class="font-display text-3xl">{number}</span>
+      <span class="text-xs font-bold uppercase tracking-wider">missing!</span>
+    </div>
+  )
+}

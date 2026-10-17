@@ -1,0 +1,45 @@
+<dialog class="lightbox" data-lightbox>
+  <form method="dialog" class="absolute -right-3 -top-3">
+    <button class="grid h-10 w-10 place-items-center rounded-full border-[3px] border-ink bg-cup-red text-xl font-bold text-white" aria-label="Close">
+      ✕
+    </button>
+  </form>
+  <img data-lightbox-img alt="" class="max-h-[80vh] w-auto rounded-xl object-contain" />
+  <p class="mt-1 text-center text-base text-ink/60" data-lightbox-count></p>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+  const img = dialog?.querySelector<HTMLImageElement>('[data-lightbox-img]');
+  const count = dialog?.querySelector('[data-lightbox-count]');
+
+  if (dialog && img && count) {
+    let gallery: string[] = [];
+    let index = 0;
+
+    const show = () => {
+      img.src = gallery[index];
+      count.textContent = gallery.length > 1 ? `${index + 1} / ${gallery.length} · tap for the next one` : '';
+    };
+
+    document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        gallery = JSON.parse(btn.dataset.gallery ?? '[]');
+        index = 0;
+        img.alt = btn.getAttribute('aria-label') ?? '';
+        show();
+        dialog.showModal();
+      });
+    });
+
+    img.addEventListener('click', () => {
+      if (gallery.length < 2) return;
+      index = (index + 1) % gallery.length;
+      show();
+    });
+
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+  }
+</script>

@@ -1,0 +1,68 @@
+---
+import Trophy from './Trophy.astro';
+import { champions, editions, loserOf, ordinal, winnerOf } from '../lib/editions';
+
+const topPlayers = champions();
+---
+
+<section id="hall-of-fame" class="mt-16">
+  <h2 class="section-title">Hall of Fame</h2>
+  <ol class="panel mt-5 divide-y-[3px] divide-ink">
+    {
+      editions.map((e) => {
+        const winner = winnerOf(e);
+        const loser = loserOf(e);
+        return (
+          <li class="flex items-center gap-4 px-4 py-3">
+            <div class="w-16 shrink-0 text-center">
+              <span class="block font-display text-2xl leading-none">{e.year}</span>
+              <span class="text-sm font-bold uppercase text-ink/60">{ordinal(e.edition)} ed.</span>
+            </div>
+            {winner ? (
+              <div class="min-w-0 flex-1">
+                <p class="flex items-center gap-2 font-display text-xl uppercase leading-tight">
+                  <span class="h-4 w-4 shrink-0 rounded-full border-2 border-ink" style={`background: ${winner.colors[0]}`} />
+                  <span class="truncate">{winner.name}</span>
+                </p>
+                {loser && <p class="text-base text-ink/70">beat {loser.name}</p>}
+              </div>
+            ) : (
+              <div class="min-w-0 flex-1">
+                <p class="font-display text-xl uppercase leading-tight text-ink/40">???</p>
+                <p class="text-base text-ink/70">The pitch will decide</p>
+              </div>
+            )}
+            {winner ? <Trophy class="h-10 w-10 shrink-0" /> : <span class="text-3xl" aria-hidden="true">⏳</span>}
+          </li>
+        );
+      })
+    }
+  </ol>
+
+  <h3 class="mt-10 font-display text-2xl uppercase">Most titles</h3>
+  {
+    topPlayers.length > 0 ? (
+      <ol class="panel mt-4 divide-y-2 divide-ink/15">
+        {topPlayers.map((p, i) => (
+          <li class="flex items-center gap-3 px-4 py-3">
+            <span class="w-7 font-display text-2xl text-cup-red">{i + 1}</span>
+            <span class="min-w-0 flex-1 truncate text-xl font-bold">{p.name}</span>
+            <span
+              class="text-cup-yellow [text-shadow:1px_1px_0_#1a1a1a]"
+              aria-label={`${p.years.length} ${p.years.length === 1 ? 'win' : 'wins'}`}
+            >
+              {'★'.repeat(p.years.length)}
+            </span>
+            <span class="text-base text-ink/60">{p.years.join(' · ')}</span>
+          </li>
+        ))}
+      </ol>
+    ) : (
+      <div class="panel mt-4 p-5 text-center">
+        <p class="text-4xl" aria-hidden="true">🕵️</p>
+        <p class="mt-2 text-xl font-bold">Leaderboard coming soon</p>
+        <p class="text-ink/70">Once the champions' stickers are in, you'll see here who has lifted the most cups.</p>
+      </div>
+    )
+  }
+</section>

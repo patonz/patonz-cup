@@ -1,0 +1,102 @@
+---
+import Countdown from './Countdown.astro';
+import Matchup from './Matchup.astro';
+import Roster from './Roster.astro';
+import Trophy from './Trophy.astro';
+import { formatDate, kickoffISO, ordinal, upcoming } from '../lib/editions';
+
+interface Props {
+  shareUrl: string;
+}
+
+const { shareUrl } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const hasRosters = upcoming?.teams.some((t) => t.players.length > 0);
+const shareText = upcoming?.date
+  ? `⚽ Patonz Cup ${upcoming.year}, ${ordinal(upcoming.edition)} edition: ${formatDate(upcoming.date)}! ${shareUrl}`
+  : `⚽ Patonz Cup ${shareUrl}`;
+---
+
+<header class="pt-8 text-center sm:pt-12">
+  <p class="label">Official sticker album · since 2024</p>
+  <button type="button" class="wobble mx-auto mt-4 block w-20 sm:w-24" data-confetti aria-label="Celebrate!">
+    <Trophy class="w-full drop-shadow-[3px_3px_0_rgba(26,26,26,0.35)]" />
+  </button>
+  <h1 class="title-pop mt-2 text-7xl leading-[0.85] sm:text-9xl">
+    Patonz<br /><span class="text-cup-red">Cup</span>
+  </h1>
+  <p class="mt-4 text-xl font-semibold">One match a year. Between friends. For glory.</p>
+</header>
+
+{
+  upcoming?.date && (
+    <section class="panel mt-8 p-4 sm:p-6" aria-labelledby="next-edition">
+      <div class="text-center">
+        <span class="ribbon" id="next-edition">
+          {ordinal(upcoming.edition)} edition
+        </span>
+        <p class="mt-3 font-display text-2xl sm:text-3xl">{formatDate(upcoming.date)}</p>
+        {(upcoming.kickoff || upcoming.location) && (
+          <p class="mt-1 text-lg font-semibold text-ink/70">
+            {[upcoming.kickoff && `Kick-off ${upcoming.kickoff}`, upcoming.location && `📍 ${upcoming.location}`]
+              .filter(Boolean)
+              .join(' · ')}
+          </p>
+        )}
+      </div>
+
+      <div class="mt-6">
+        <Countdown target={kickoffISO(upcoming)} />
+      </div>
+
+      <div class="mt-8">
+        <Matchup edition={upcoming} size="lg" />
+      </div>
+      {upcoming.teams.length === 0 && (
+        <p class="mt-4 text-center text-lg font-semibold">Teams and names are still top secret 🤫</p>
+      )}
+      {hasRosters && upcoming.teams.map((team) => <Roster team={team} />)}
+
+      <div class="mt-8 grid gap-3 sm:grid-cols-2">
+        <a class="btn bg-cup-yellow" href={`${base}patonz-cup.ics`}>
+          📅 Save the date
+        </a>
+        <a
+          class="btn bg-cup-green text-white"
+          href={`https://wa.me/?text=${encodeURIComponent(shareText)}`}
+          target="_blank"
+          rel="noopener"
+        >
+          💬 Share
+        </a>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  const colors = ['#d62828', '#f7c600', '#1f7a3a', '#1d4e89', '#ffffff'];
+
+  document.querySelectorAll<HTMLElement>('[data-confetti]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      btn.classList.remove('is-cheering');
+      void btn.offsetWidth;
+      btn.classList.add('is-cheering');
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      for (let i = 0; i < 70; i++) {
+        const piece = document.createElement('span');
+        piece.className = 'confetti';
+        piece.style.left = `${Math.random() * 100}vw`;
+        piece.style.background = colors[i % colors.length];
+        piece.style.border = '1px solid #1a1a1a';
+        piece.style.setProperty('--drift', `${Math.random() * 200 - 100}px`);
+        piece.style.setProperty('--spin', `${Math.random() * 1080 - 540}deg`);
+        piece.style.animationDuration = `${1.8 + Math.random() * 1.6}s`;
+        piece.style.animationDelay = `${Math.random() * 0.3}s`;
+        piece.addEventListener('animationend', () => piece.remove());
+        document.body.append(piece);
+      }
+    });
+  });
+</script>

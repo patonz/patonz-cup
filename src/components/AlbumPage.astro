@@ -1,0 +1,22 @@
+---
+import Matchup from './Matchup.astro';
+import Roster from './Roster.astro';
+import { ordinal, type Edition } from '../lib/editions';
+
+interface Props {
+  edition: Edition;
+}
+
+const { edition } = Astro.props;
+---
+
+<article class="panel w-[88%] max-w-2xl shrink-0 snap-center" aria-label={`Patonz Cup ${edition.year}`}>
+  <header class="flex items-center justify-between gap-3 border-b-[3px] border-ink bg-cup-blue px-4 py-3 text-white">
+    <span class="font-display text-4xl leading-none">{edition.year}</span>
+    <span class="ribbon">{ordinal(edition.edition)} edition</span>
+  </header>
+  <div class="p-4 sm:p-6">
+    <Matchup edition={edition} />
+    {edition.teams.map((team) => <Roster team={team} champion={team.id === edition.winner} />)}
+  </div>
+</article>
