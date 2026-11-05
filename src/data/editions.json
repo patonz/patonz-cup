@@ -4,10 +4,43 @@
       "edition": 3,
       "year": 2026,
       "date": "2026-11-07",
-      "kickoff": null,
+      "kickoff": "17:00",
       "location": null,
       "winner": null,
-      "teams": []
+      "teams": [
+        {
+          "id": "patatine",
+          "name": "Patatine",
+          "colors": ["#ffffff", "#d62828", "#1d4e89"],
+          "photos": [],
+          "players": [
+            "Il Nonno",
+            "Andrea",
+            "Edopardo",
+            "Ario",
+            "Erwin",
+            "Javier (Batman)",
+            "Patonz",
+            "Murat Ozden"
+          ]
+        },
+        {
+          "id": "topine",
+          "name": "Topine",
+          "colors": ["#1a1a1a", "#f7c600"],
+          "photos": [],
+          "players": [
+            "Jacopo",
+            "Marco Pellegrino",
+            "Pichichi",
+            "Pis8",
+            "Aris",
+            "Vitandrea",
+            "Luca",
+            "Lorenzo"
+          ]
+        }
+      ]
     },
     {
       "edition": 2,
@@ -22,14 +55,33 @@
           "name": "WoW",
           "colors": ["#1d4e89", "#f7c600"],
           "photos": [],
-          "players": []
+          "players": [
+            "Vitandrea",
+            "Ario",
+            "Luca",
+            "Ginevra",
+            "Jacopo",
+            "Mattia",
+            "Murat Ozden",
+            "Adrian",
+            "Edo"
+          ]
         },
         {
           "id": "dota",
           "name": "Dota",
           "colors": ["#b3261e", "#1a1a1a"],
           "photos": [],
-          "players": []
+          "players": [
+            "Marianna",
+            "Alberto (Digimon)",
+            "Patonz",
+            "Il Nonno",
+            "Aris",
+            "Andrea",
+            "Erwin",
+            "Lorenzo"
+          ]
         }
       ]
     },
@@ -44,16 +96,30 @@
         {
           "id": "colbuccaro",
           "name": "Colbuccaro",
-          "colors": ["#1f7a3a", "#ffffff"],
+          "colors": ["#6ec4e8", "#ffffff"],
           "photos": [],
-          "players": []
+          "players": [
+            "Aris",
+            "Luca",
+            "Mattia",
+            "Patonz",
+            "Beatrice",
+            "Jacopo"
+          ]
         },
         {
           "id": "san-donato",
           "name": "San Donato",
-          "colors": ["#d62828", "#1d4e89"],
+          "colors": ["#f7c600", "#1d4e89"],
           "photos": [],
-          "players": []
+          "players": [
+            "Il Nonno",
+            "Edoardo",
+            "Marco Napoli",
+            "Lorenzo",
+            "Erwin",
+            "Adrian"
+          ]
         }
       ]
     }

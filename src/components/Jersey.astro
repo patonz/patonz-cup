@@ -9,7 +9,7 @@ interface Props {
 }
 
 const { team, class: className = '' } = Astro.props;
-const [main, accent] = team.colors;
+const [base, writing, logo] = team.colors;
 const images = (team.photos ?? []).map(photo).filter((img): img is ImageMetadata => Boolean(img));
 const fullSize = await Promise.all(images.map((src) => getImage({ src, width: 1400 })));
 const initial = team.name.trim()[0]?.toUpperCase() ?? '?';
@@ -33,18 +33,19 @@ const initial = team.name.trim()[0]?.toUpperCase() ?? '?';
   ) : (
     <svg viewBox="0 0 100 100" class={`w-full ${className}`} role="img" aria-label={`${team.name} jersey`}>
       <g stroke="#1a1a1a" stroke-width="3" stroke-linejoin="round">
-        <path d="M30 8 40 4q10 9 20 0l10 4 22 14-10 18-10-6v60H28V34l-10 6L8 22z" fill={main} />
-        <path d="M30 8 8 22l10 18 10-6zM70 8l22 14-10 18-10-6z" fill={accent} />
-        <path d="M40 4q10 9 20 0" fill="none" stroke={accent} stroke-width="5" />
+        <path d="M30 8 40 4q10 9 20 0l10 4 22 14-10 18-10-6v60H28V34l-10 6L8 22z" fill={base} />
+        <path d="M30 8 8 22l10 18 10-6zM70 8l22 14-10 18-10-6z" fill={base} />
+        <path d="M40 4q10 9 20 0" fill="none" stroke={writing} stroke-width="5" />
         <path d="M30 8 40 4q10 9 20 0l10 4 22 14-10 18-10-6v60H28V34l-10 6L8 22z" fill="none" />
       </g>
+      {logo && <circle cx="50" cy="40" r="7" fill={logo} stroke="#1a1a1a" stroke-width="2" />}
       <text
         x="50"
-        y="72"
+        y={logo ? 78 : 72}
         text-anchor="middle"
         font-family="'Alfa Slab One', Georgia, serif"
         font-size="30"
-        fill={accent}
+        fill={writing}
         stroke="#1a1a1a"
         stroke-width="1.5"
         paint-order="stroke"

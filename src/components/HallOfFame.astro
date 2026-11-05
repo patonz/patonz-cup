@@ -1,6 +1,6 @@
 ---
 import Trophy from './Trophy.astro';
-import { champions, editions, loserOf, ordinal, winnerOf } from '../lib/editions';
+import { champions, editions, isHost, loserOf, ordinal, winnerOf } from '../lib/editions';
 
 const topPlayers = champions();
 ---
@@ -46,7 +46,9 @@ const topPlayers = champions();
         {topPlayers.map((p, i) => (
           <li class="flex items-center gap-3 px-4 py-3">
             <span class="w-7 font-display text-2xl text-cup-red">{i + 1}</span>
-            <span class="min-w-0 flex-1 truncate text-xl font-bold">{p.name}</span>
+            <span class="min-w-0 flex-1 truncate text-xl font-bold">
+              {isHost(p.name) ? <span class="rounded border-2 border-ink bg-cup-yellow px-2">{p.name}</span> : p.name}
+            </span>
             <span
               class="text-cup-yellow [text-shadow:1px_1px_0_#1a1a1a]"
               aria-label={`${p.years.length} ${p.years.length === 1 ? 'win' : 'wins'}`}

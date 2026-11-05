@@ -1,18 +1,29 @@
 ---
+import { isCaptain, isHost } from '../lib/editions';
+
 interface Props {
   name: string | null;
   number: number;
   color: string;
+  mark?: string;
   champion?: boolean;
 }
 
-const { name, number, color, champion = false } = Astro.props;
+const { name, number, color, mark = '#1a1a1a', champion = false } = Astro.props;
+const light = (() => {
+  const hex = color.replace('#', '');
+  const channel = (i: number) => parseInt(hex.slice(i, i + 2), 16);
+  return channel(0) * 0.299 + channel(2) * 0.587 + channel(4) * 0.114 > 170;
+})();
+const figure = light ? mark : 'rgb(255 255 255 / 0.55)';
+const captain = name ? isCaptain(name) : false;
+const host = name ? isHost(name) : false;
 const tilt = `${((number % 3) - 1) * 1.5}deg`;
 ---
 
 {
   name ? (
-    <div class="sticker" style={`--team: ${color}; --tilt: ${tilt}`}>
+    <div class:list={['sticker', host && 'sticker--host']} style={`--team: ${color}; --tilt: ${tilt}`}>
       <span class="sticker-num">{number}</span>
       {champion && (
         <span class="foil absolute right-2 top-2 grid h-6 w-6 place-items-center rounded-full border-2 border-ink text-xs" title="Champion">
@@ -21,11 +32,14 @@ const tilt = `${((number % 3) - 1) * 1.5}deg`;
       )}
       <div class="sticker-photo">
         <svg viewBox="0 0 60 60" class="w-4/5" aria-hidden="true">
-          <circle cx="30" cy="24" r="11" fill="rgb(255 255 255 / 0.55)" />
-          <path d="M8 60c0-14 10-22 22-22s22 8 22 22z" fill="rgb(255 255 255 / 0.55)" />
+          <circle cx="30" cy="24" r="11" fill={figure} />
+          <path d="M8 60c0-14 10-22 22-22s22 8 22 22z" fill={figure} />
         </svg>
       </div>
-      <p class="sticker-name">{name}</p>
+      <p class="sticker-name" title={captain ? `Captain ${name}` : name}>
+        {captain && <span class="sticker-captain">C</span>}
+        {name}
+      </p>
     </div>
   ) : (
     <div class="sticker sticker--empty" style={`--tilt: ${tilt}`} aria-label={`Sticker ${number} missing`}>

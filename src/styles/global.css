@@ -79,7 +79,22 @@
   }
 
   .sticker-name {
-    @apply mt-1 truncate rounded bg-ink px-1 py-0.5 text-center text-sm font-bold uppercase leading-tight text-white;
+    @apply mt-1 line-clamp-2 rounded bg-ink px-1 py-0.5 text-center text-xs font-bold uppercase leading-tight text-white sm:text-sm;
+    min-height: 2.15em;
+    overflow-wrap: anywhere;
+  }
+
+  .sticker--host {
+    @apply border-cup-yellow;
+    box-shadow: 2px 3px 0 theme('colors.ink'), 0 0 0 2px theme('colors.cup.yellow');
+  }
+
+  .sticker--host .sticker-name {
+    @apply bg-cup-yellow text-ink;
+  }
+
+  .sticker-captain {
+    @apply mr-0.5 inline-grid h-4 w-4 shrink-0 place-items-center rounded-full border border-ink bg-cup-yellow align-middle text-[10px] leading-none text-ink;
   }
 
   .sticker-num {

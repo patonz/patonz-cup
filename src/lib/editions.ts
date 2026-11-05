@@ -4,7 +4,7 @@ import data from '../data/editions.json';
 export interface Team {
   id: string;
   name: string;
-  colors: [string, string];
+  colors: [string, string, string?];
   photos?: string[];
   players: string[];
 }
@@ -25,6 +25,12 @@ export const editions = (data.editions as unknown as Edition[])
 
 export const upcoming = editions.find((e) => e.winner === null);
 export const completed = editions.filter((e) => e.winner !== null);
+
+export const CAPTAINS = ['Jacopo', 'Il Nonno'];
+export const HOST = 'Patonz';
+
+export const isCaptain = (name: string) => CAPTAINS.includes(name);
+export const isHost = (name: string) => name === HOST;
 
 export const winnerOf = (e: Edition) => e.teams.find((t) => t.id === e.winner);
 export const loserOf = (e: Edition) => e.teams.find((t) => t.id !== e.winner);

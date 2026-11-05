@@ -1,6 +1,6 @@
 ---
 import Sticker from './Sticker.astro';
-import type { Team } from '../lib/editions';
+import { isCaptain, type Team } from '../lib/editions';
 
 interface Props {
   team: Team;
@@ -10,12 +10,16 @@ interface Props {
 const EMPTY_SLOTS = 5;
 
 const { team, champion = false } = Astro.props;
-const slots: (string | null)[] = team.players.length ? team.players : Array(EMPTY_SLOTS).fill(null);
+const players = [...team.players].sort((a, b) => Number(isCaptain(b)) - Number(isCaptain(a)));
+const slots: (string | null)[] = players.length ? players : Array(EMPTY_SLOTS).fill(null);
 ---
 
 <div class="mt-6">
   <h3 class="flex items-center gap-2 font-display text-xl uppercase">
-    <span class="h-5 w-5 shrink-0 rounded-full border-[3px] border-ink" style={`background: ${team.colors[0]}`}></span>
+    <span
+      class="h-5 w-5 shrink-0 rounded-full border-[3px] border-ink"
+      style={`background: ${team.colors[0].toLowerCase() === '#ffffff' ? team.colors[1] : team.colors[0]}`}
+    ></span>
     {team.name}
     {champion && <span aria-label="Champions">🏆</span>}
   </h3>
@@ -23,7 +27,7 @@ const slots: (string | null)[] = team.players.length ? team.players : Array(EMPT
     {
       slots.map((name, i) => (
         <li>
-          <Sticker name={name} number={i + 1} color={team.colors[0]} champion={champion} />
+          <Sticker name={name} number={i + 1} color={team.colors[0]} mark={team.colors[1]} champion={champion} />
         </li>
       ))
     }
