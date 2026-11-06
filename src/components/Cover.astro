@@ -38,7 +38,7 @@ const shareText = upcoming?.date
         <p class="mt-3 font-display text-2xl sm:text-3xl">{formatDate(upcoming.date)}</p>
         {(upcoming.kickoff || upcoming.location) && (
           <p class="mt-1 text-lg font-semibold text-ink/70">
-            {[upcoming.kickoff && `Kick-off ${upcoming.kickoff}`, upcoming.location && `📍 ${upcoming.location}`]
+            {[upcoming.kickoff && `Kick-off ${upcoming.kickoff} UAE`, upcoming.location && `📍 ${upcoming.location}`]
               .filter(Boolean)
               .join(' · ')}
           </p>

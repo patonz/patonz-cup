@@ -39,8 +39,8 @@ const ordinalSuffix = new Intl.PluralRules('en-GB', { type: 'ordinal' });
 const suffixes: Record<string, string> = { one: 'st', two: 'nd', few: 'rd', other: 'th' };
 export const ordinal = (n: number) => `${n}${suffixes[ordinalSuffix.select(n)]}`;
 
-// Editions are played in November: Italian winter time (UTC+1).
-export const kickoffISO = (e: Edition) => `${e.date}T${e.kickoff ?? '00:00'}:00+01:00`;
+// The match is played in the UAE: Gulf Standard Time, UTC+4, no daylight saving.
+export const kickoffISO = (e: Edition) => `${e.date}T${e.kickoff ?? '00:00'}:00+04:00`;
 
 export const formatDate = (date: string) =>
   new Intl.DateTimeFormat('en-GB', {
@@ -48,8 +48,8 @@ export const formatDate = (date: string) =>
     day: 'numeric',
     month: 'long',
     year: 'numeric',
-    timeZone: 'Europe/Rome',
-  }).format(new Date(`${date}T12:00:00+01:00`));
+    timeZone: 'Asia/Dubai',
+  }).format(new Date(`${date}T12:00:00+04:00`));
 
 const photoModules = import.meta.glob<{ default: ImageMetadata }>(
   '../assets/jerseys/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP}',
