@@ -3,18 +3,23 @@ import Countdown from './Countdown.astro';
 import Matchup from './Matchup.astro';
 import Roster from './Roster.astro';
 import Trophy from './Trophy.astro';
-import { formatDate, kickoffISO, ordinal, upcoming } from '../lib/editions';
+import { editions, formatDate, kickoffISO, ordinal, upcoming, winnerOf } from '../lib/editions';
 
 interface Props {
   shareUrl: string;
 }
 
 const { shareUrl } = Astro.props;
+const featured = upcoming ?? editions[0];
+const winner = featured ? winnerOf(featured) : undefined;
+const played = Boolean(winner);
 const base = import.meta.env.BASE_URL;
-const hasRosters = upcoming?.teams.some((t) => t.players.length > 0);
-const shareText = upcoming?.date
-  ? `⚽ Patonz Cup ${upcoming.year}, ${ordinal(upcoming.edition)} edition: ${formatDate(upcoming.date)}! ${shareUrl}`
-  : `⚽ Patonz Cup ${shareUrl}`;
+const hasRosters = featured?.teams.some((t) => t.players.length > 0);
+const shareText = played
+  ? `🏆 ${winner?.name} won the Patonz Cup ${featured?.year}! ${shareUrl}`
+  : featured?.date
+    ? `⚽ Patonz Cup ${featured.year}, ${ordinal(featured.edition)} edition: ${formatDate(featured.date)}! ${shareUrl}`
+    : `⚽ Patonz Cup ${shareUrl}`;
 ---
 
 <header class="pt-8 text-center sm:pt-12">
@@ -29,38 +34,46 @@ const shareText = upcoming?.date
 </header>
 
 {
-  upcoming?.date && (
+  featured && (featured.date || featured.teams.length > 0) && (
     <section class="panel mt-8 p-4 sm:p-6" aria-labelledby="next-edition">
       <div class="text-center">
         <span class="ribbon" id="next-edition">
-          {ordinal(upcoming.edition)} edition
+          {ordinal(featured.edition)} edition
         </span>
-        <p class="mt-3 font-display text-2xl sm:text-3xl">{formatDate(upcoming.date)}</p>
-        {(upcoming.kickoff || upcoming.location) && (
-          <p class="mt-1 text-lg font-semibold text-ink/70">
-            {[upcoming.kickoff && `Kick-off ${upcoming.kickoff} UAE`, upcoming.location && `📍 ${upcoming.location}`]
-              .filter(Boolean)
-              .join(' · ')}
-          </p>
+        {featured.date && <p class="mt-3 font-display text-2xl sm:text-3xl">{formatDate(featured.date)}</p>}
+        {played ? (
+          <p class="mt-2 font-display text-3xl uppercase text-cup-red">{winner?.name} won</p>
+        ) : (
+          (featured.kickoff || featured.location) && (
+            <p class="mt-1 text-lg font-semibold text-ink/70">
+              {[featured.kickoff && `Kick-off ${featured.kickoff} UAE`, featured.location && `📍 ${featured.location}`]
+                .filter(Boolean)
+                .join(' · ')}
+            </p>
+          )
         )}
       </div>
 
-      <div class="mt-6">
-        <Countdown target={kickoffISO(upcoming)} />
-      </div>
+      {!played && featured.date && (
+        <div class="mt-6">
+          <Countdown target={kickoffISO(featured)} />
+        </div>
+      )}
 
       <div class="mt-8">
-        <Matchup edition={upcoming} size="lg" />
+        <Matchup edition={featured} size="lg" />
       </div>
-      {upcoming.teams.length === 0 && (
+      {featured.teams.length === 0 && (
         <p class="mt-4 text-center text-lg font-semibold">Teams and names are still top secret 🤫</p>
       )}
-      {hasRosters && upcoming.teams.map((team) => <Roster team={team} />)}
+      {hasRosters && featured.teams.map((team) => <Roster team={team} champion={team.id === featured.winner} />)}
 
-      <div class="mt-8 grid gap-3 sm:grid-cols-2">
-        <a class="btn bg-cup-yellow" href={`${base}patonz-cup.ics`}>
-          📅 Save the date
-        </a>
+      <div class:list={['mt-8 grid gap-3', !played && 'sm:grid-cols-2']}>
+        {!played && (
+          <a class="btn bg-cup-yellow" href={`${base}patonz-cup.ics`}>
+            📅 Save the date
+          </a>
+        )}
         <a
           class="btn bg-cup-green text-white"
           href={`https://wa.me/?text=${encodeURIComponent(shareText)}`}

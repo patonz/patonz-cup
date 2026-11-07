@@ -5,14 +5,18 @@ import Cover from '../components/Cover.astro';
 import Footer from '../components/Footer.astro';
 import HallOfFame from '../components/HallOfFame.astro';
 import Lightbox from '../components/Lightbox.astro';
-import { formatDate, ordinal, upcoming } from '../lib/editions';
+import { editions, formatDate, ordinal, upcoming, winnerOf } from '../lib/editions';
 
+const latest = upcoming ?? editions[0];
+const champion = latest ? winnerOf(latest) : undefined;
 const base = import.meta.env.BASE_URL;
 const siteUrl = new URL(base, Astro.site).href;
 const ogImage = new URL(`${base}og.png`, Astro.site).href;
-const description = upcoming?.date
-  ? `${ordinal(upcoming.edition)} edition: ${formatDate(upcoming.date)}. The annual match between friends: teams, jerseys and hall of fame.`
-  : 'The annual match between friends: teams, jerseys and hall of fame.';
+const description = champion
+  ? `${champion.name} won the ${ordinal(latest.edition)} edition. The annual match between friends.`
+  : latest?.date
+    ? `${ordinal(latest.edition)} edition: ${formatDate(latest.date)}. The annual match between friends: teams, jerseys and hall of fame.`
+    : 'The annual match between friends: teams, jerseys and hall of fame.';
 ---
 
 <!doctype html>
